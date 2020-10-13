@@ -19,7 +19,7 @@ namespace ArcadeFlyer2D
         {
             // Get the graphics
             graphics = new GraphicsDeviceManager(this);
-
+            
             // Set the height and width
             graphics.PreferredBackBufferWidth = 1600;
             graphics.PreferredBackBufferHeight = 900;
