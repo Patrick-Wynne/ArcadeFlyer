@@ -13,6 +13,10 @@ namespace ArcadeFlyer2D
         // The speed at which the player can move
         private float movementSpeed = 4.0f;
 
+        private float projectileCoolDownTime = 0.5f;
+        private float projectileTimer = 0.0f;
+        private bool projectileTimerActive = false;
+        private bool isUp = false;
         // Initialize a player
         public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
@@ -40,7 +44,8 @@ namespace ArcadeFlyer2D
             bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.Down);
             bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.Left);
             bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.Right);
-
+            bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space);
+            bool spaceKeyUp = currentKeyboardState.IsKeyUp(Keys.Space);
             // If Up is pressed, decrease position Y
             if (upKeyPressed)
             {
@@ -64,6 +69,21 @@ namespace ArcadeFlyer2D
             {
                 position.X += movementSpeed;
             }
+
+            if(spaceKeyUp)
+            {
+                isUp = true;
+            }
+
+            if (spaceKeyPressed && projectileTimerActive == false && isUp)
+            {
+                isUp = false;
+                Vector2 projectilePosition = new Vector2(position.X + (SpriteWidth/2), position.Y + (SpriteHeight/2));
+                Vector2 projectileVelocity = new Vector2(4.0f,0.0f);
+                root.FireProjectile(projectilePosition, projectileVelocity);
+                projectileTimerActive = true;
+                projectileTimer = 0.0f;
+            }
         }
 
         // Called each frame
@@ -74,6 +94,14 @@ namespace ArcadeFlyer2D
 
             // Handle any movement input
             HandleInput(currentKeyboardState);
+            if(projectileTimerActive)
+            {
+                projectileTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if(projectileTimer > projectileCoolDownTime)
+                {
+                    projectileTimerActive = false;
+                }
+            }
         }
     }
 }
