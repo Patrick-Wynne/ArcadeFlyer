@@ -23,6 +23,7 @@ namespace ArcadeFlyer2D
         private List<Projectile> projectiles;
 
         private Texture2D playerProjectileSprite;
+        private Texture2D enemyProjectileSprite;
 
         // Screen width
         private int screenWidth = 1600;
@@ -79,6 +80,7 @@ namespace ArcadeFlyer2D
             // Create the sprite batch
             spriteBatch = new SpriteBatch(GraphicsDevice);
             playerProjectileSprite = Content.Load<Texture2D>("PlayerFire");
+            enemyProjectileSprite = Content.Load<Texture2D>("EnemyFire");
         }
 
         // Called every frame
@@ -86,13 +88,16 @@ namespace ArcadeFlyer2D
         {
             // Update base game
             base.Update(gameTime);
+            
             foreach(Projectile p in projectiles)
             {
+                /*
                 if(p.Position.X-10>this.ScreenWidth)
                 {
                     projectiles.Remove(p);
                     return;
                 }
+                */
                 p.Update(gameTime);
             }
             // Update the components
@@ -120,11 +125,19 @@ namespace ArcadeFlyer2D
             spriteBatch.End();
         }
 
-        public void FireProjectile(Vector2 position, Vector2 velocity)
+        public void FireProjectile(Vector2 position, Vector2 velocity, string projectileType)
         {
-            Projectile firedProjectile = new Projectile(position, velocity, playerProjectileSprite);
+            Texture2D texture;
+            if(projectileType == "player")
+            {
+                texture = playerProjectileSprite;
+            }
+            else
+            {
+                texture = enemyProjectileSprite;
+            }
+            Projectile firedProjectile = new Projectile(position, velocity, texture);
             projectiles.Add(firedProjectile);
-            Console.WriteLine(projectiles.Count);
         }
     }
 }

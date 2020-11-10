@@ -12,10 +12,7 @@ namespace ArcadeFlyer2D
 
         // The speed at which the player can move
         private float movementSpeed = 4.0f;
-
-        private float projectileCoolDownTime = 0.5f;
-        private float projectileTimer = 0.0f;
-        private bool projectileTimerActive = false;
+        private Timer coolDownTimer;
         private bool isUp = false;
         // Initialize a player
         public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
@@ -24,6 +21,7 @@ namespace ArcadeFlyer2D
             this.root = root;
             this.position = position;
             this.SpriteWidth = 128.0f;
+            coolDownTimer = new Timer(0.5f);
 
             // Load the content for the player
             LoadContent();
@@ -75,14 +73,13 @@ namespace ArcadeFlyer2D
                 isUp = true;
             }
 
-            if (spaceKeyPressed && projectileTimerActive == false && isUp)
+            if (spaceKeyPressed && !coolDownTimer.Active && isUp)
             {
                 isUp = false;
                 Vector2 projectilePosition = new Vector2(position.X + (SpriteWidth/2), position.Y + (SpriteHeight/2));
                 Vector2 projectileVelocity = new Vector2(4.0f,0.0f);
-                root.FireProjectile(projectilePosition, projectileVelocity);
-                projectileTimerActive = true;
-                projectileTimer = 0.0f;
+                root.FireProjectile(projectilePosition, projectileVelocity, "player");
+                coolDownTimer.StartTimer();
             }
         }
 
@@ -91,17 +88,9 @@ namespace ArcadeFlyer2D
         {   
             // Get current keyboard state
             KeyboardState currentKeyboardState = Keyboard.GetState();
-
+            coolDownTimer.update(gameTime);
             // Handle any movement input
             HandleInput(currentKeyboardState);
-            if(projectileTimerActive)
-            {
-                projectileTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if(projectileTimer > projectileCoolDownTime)
-                {
-                    projectileTimerActive = false;
-                }
-            }
         }
     }
 }

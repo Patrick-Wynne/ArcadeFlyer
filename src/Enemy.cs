@@ -11,6 +11,7 @@ namespace ArcadeFlyer2D
 
         // The the velocity for this enemy
         private Vector2 velocity;
+        private Timer coolDownTimer;
 
         // Initialize an enemy
         public Enemy(ArcadeFlyerGame root, Vector2 position) : base(position)
@@ -20,7 +21,7 @@ namespace ArcadeFlyer2D
             this.position = position;
             this.SpriteWidth = 128.0f;
             this.velocity = new Vector2(-1.0f, 5.0f);
-
+            coolDownTimer = new Timer(0.5f);
             // Load the content for this enemy
             LoadContent();
         }
@@ -35,6 +36,7 @@ namespace ArcadeFlyer2D
         // Called each frame
         public void Update(GameTime gameTime)
         {
+
             // Handle movement
             position += velocity;
 
@@ -43,6 +45,15 @@ namespace ArcadeFlyer2D
             {
                 velocity.Y *= -1;
             }
+            coolDownTimer.update(gameTime);
+            if(!coolDownTimer.Active)
+            {
+                coolDownTimer.StartTimer();
+                Vector2 projectilePosition = new Vector2(position.X, position.Y + SpriteHeight / 2);
+                Vector2 projectileVelocity = new Vector2(-5.0f, 0.0f);
+                root.FireProjectile(projectilePosition, projectileVelocity, "enemy");
+            }
+
         }
     }
 }
