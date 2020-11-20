@@ -21,10 +21,12 @@ namespace ArcadeFlyer2D
         private Enemy enemy;
 
         private List<Projectile> projectiles;
+        private List<Enemy> enemies;
 
         private Texture2D playerProjectileSprite;
         private Texture2D enemyProjectileSprite;
-
+        private Timer enemyCreationTimer;
+        private Background bg;
         // Screen width
         private int screenWidth = 1600;
         public int ScreenWidth
@@ -66,6 +68,11 @@ namespace ArcadeFlyer2D
             enemy = new Enemy(this, new Vector2(screenWidth, 0));
 
             projectiles = new List<Projectile>();
+
+            enemies = new List<Enemy>();
+            enemies.Add(enemy);
+            enemyCreationTimer = new Timer(3.0f);
+            bg = new Background(this, new Vector2(screenWidth, screenHeight/2));
         }
 
         // Initialize
@@ -88,23 +95,47 @@ namespace ArcadeFlyer2D
         {
             // Update base game
             base.Update(gameTime);
-            
-            foreach(Projectile p in projectiles)
-            {
-                /*
-                if(p.Position.X-10>this.ScreenWidth)
-                {
-                    projectiles.Remove(p);
-                    return;
-                }
-                */
-                p.Update(gameTime);
-            }
+
             // Update the components
             player.Update(gameTime);
-            enemy.Update(gameTime);
-        }
+            bg.Update(gameTime, player.Position);
+            foreach (Enemy e in enemies)
+            {
+                e.Update(gameTime);
+            }
 
+            for (int i = projectiles.Count - 1; i >= 0; i--)
+            {
+                Projectile p = projectiles[i];
+                p.Update(gameTime);
+
+                bool isPlayerProjectile = p.ProjectileType == ProjectileType.Player;
+
+                if (!isPlayerProjectile && player.Overlap(p))
+                {
+                    projectiles.Remove(p);
+                }
+                else if (isPlayerProjectile)
+                {
+                    for (int x = enemies.Count - 1; x >= 0; x--)
+                    {
+                        Enemy e = enemies[x];
+                        if (e.Overlap(p))
+                        {
+                            projectiles.Remove(p);
+                            enemies.Remove(e);
+                        }
+                    }
+                }
+            }
+            if(!enemyCreationTimer.Active)
+            {
+                Enemy e = new Enemy(this, new Vector2(screenWidth, 0));
+                enemies.Add(e);
+                enemyCreationTimer.StartTimer();
+            }
+            enemyCreationTimer.update(gameTime);
+        }
         // Draw everything in the game
         protected override void Draw(GameTime gameTime)
         {
@@ -113,22 +144,28 @@ namespace ArcadeFlyer2D
 
             // Start batch draw
             spriteBatch.Begin();
-
+            bg.Draw(gameTime, spriteBatch);
             // Draw the components
             player.Draw(gameTime, spriteBatch);
-            enemy.Draw(gameTime, spriteBatch);
-            foreach(Projectile p in projectiles)
+
+            foreach (Enemy e in enemies)
+            {
+                e.Draw(gameTime, spriteBatch);
+            }
+
+            foreach (Projectile p in projectiles)
             {
                 p.Draw(gameTime, spriteBatch);
             }
+
             // End batch draw
             spriteBatch.End();
         }
 
-        public void FireProjectile(Vector2 position, Vector2 velocity, string projectileType)
+        public void FireProjectile(Vector2 position, Vector2 velocity, ProjectileType projectileType)
         {
             Texture2D texture;
-            if(projectileType == "player")
+            if (projectileType == ProjectileType.Player)
             {
                 texture = playerProjectileSprite;
             }
@@ -136,7 +173,7 @@ namespace ArcadeFlyer2D
             {
                 texture = enemyProjectileSprite;
             }
-            Projectile firedProjectile = new Projectile(position, velocity, texture);
+            Projectile firedProjectile = new Projectile(position, velocity, texture, projectileType);
             projectiles.Add(firedProjectile);
         }
     }

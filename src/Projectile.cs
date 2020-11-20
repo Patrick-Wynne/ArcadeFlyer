@@ -7,12 +7,21 @@ namespace ArcadeFlyer2D
     class Projectile : Sprite
     {
         private Vector2 velocity;
+        private ProjectileType projectileType;
+        public ProjectileType ProjectileType
+        {
+            get { return projectileType; }
+            set { projectileType = value; }
+        }
+        
+        
         private ArcadeFlyerGame root;
-        public Projectile(Vector2 position, Vector2 velocity, Texture2D spriteImage) : base(position)
+        public Projectile(Vector2 position, Vector2 velocity, Texture2D spriteImage, ProjectileType projectileType) : base(position)
         {
             this.velocity = velocity;
             this.SpriteWidth = 32.0f;
             this.SpriteImage = spriteImage;
+            this.projectileType = projectileType;
         }
 
         public void Update(GameTime gameTime)

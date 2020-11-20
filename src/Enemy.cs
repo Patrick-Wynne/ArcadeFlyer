@@ -51,7 +51,7 @@ namespace ArcadeFlyer2D
                 coolDownTimer.StartTimer();
                 Vector2 projectilePosition = new Vector2(position.X, position.Y + SpriteHeight / 2);
                 Vector2 projectileVelocity = new Vector2(-5.0f, 0.0f);
-                root.FireProjectile(projectilePosition, projectileVelocity, "enemy");
+                root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Enemy);
             }
 
         }
