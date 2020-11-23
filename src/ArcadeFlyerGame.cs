@@ -62,7 +62,7 @@ namespace ArcadeFlyer2D
             IsMouseVisible = true;
 
             // Initialize the player to be in the top left
-            player = new Player(this, new Vector2(0.0f, 0.0f));
+            player = new Player(this, new Vector2(0.0f, 0.0f), new Vector2(ScreenWidth/2, screenHeight/2));
 
             // Initialize an enemy to be on the right side
             enemy = new Enemy(this, new Vector2(screenWidth, 0));
@@ -98,7 +98,7 @@ namespace ArcadeFlyer2D
 
             // Update the components
             player.Update(gameTime);
-            bg.Update(gameTime, player.Position);
+            bg.Update(gameTime);
             foreach (Enemy e in enemies)
             {
                 e.Update(gameTime);
@@ -144,18 +144,18 @@ namespace ArcadeFlyer2D
 
             // Start batch draw
             spriteBatch.Begin();
-            bg.Draw(gameTime, spriteBatch);
+            bg.Draw(gameTime, spriteBatch, player.Position);
             // Draw the components
-            player.Draw(gameTime, spriteBatch);
+            player.Draw(gameTime, spriteBatch, new Vector2(screenWidth/2, screenHeight/2));
 
             foreach (Enemy e in enemies)
             {
-                e.Draw(gameTime, spriteBatch);
+                e.Draw(gameTime, spriteBatch, player.Position);
             }
 
             foreach (Projectile p in projectiles)
             {
-                p.Draw(gameTime, spriteBatch);
+                p.Draw(gameTime, spriteBatch, player.Position);
             }
 
             // End batch draw

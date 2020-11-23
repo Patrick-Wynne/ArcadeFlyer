@@ -41,6 +41,7 @@ namespace ArcadeFlyer2D
             position += velocity;
 
             // Bounce on top and bottom
+            /*
             if (position.Y < 0 || position.Y > (root.ScreenHeight - SpriteHeight))
             {
                 velocity.Y *= -1;
@@ -53,6 +54,7 @@ namespace ArcadeFlyer2D
                 Vector2 projectileVelocity = new Vector2(-5.0f, 0.0f);
                 root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Enemy);
             }
+            */
 
         }
     }

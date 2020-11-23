@@ -15,14 +15,13 @@ namespace ArcadeFlyer2D
         private Timer coolDownTimer;
         private bool isUp = false;
         // Initialize a player
-        public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
+        public Player(ArcadeFlyerGame root, Vector2 position, Vector2 screenCenter) : base(position)
         {
             // Initialize values
             this.root = root;
             this.position = position;
             this.SpriteWidth = 128.0f;
             coolDownTimer = new Timer(0.5f);
-
             // Load the content for the player
             LoadContent();
         }
@@ -47,13 +46,13 @@ namespace ArcadeFlyer2D
             // If Up is pressed, decrease position Y
             if (upKeyPressed)
             {
-                position.Y -= movementSpeed;
+                //position.Y -= movementSpeed;
             }
             
             // If Down is pressed, increase position Y
             if (downKeyPressed)
             {
-                position.Y += movementSpeed;
+                //position.Y += movementSpeed;
             }
             
             // If Left is pressed, decrease position X
@@ -91,6 +90,11 @@ namespace ArcadeFlyer2D
             coolDownTimer.update(gameTime);
             // Handle any movement input
             HandleInput(currentKeyboardState);
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 screenCenter)
+        {
+            spriteBatch.Draw(SpriteImage, screenCenter, Color.White);
         }
     }
 }

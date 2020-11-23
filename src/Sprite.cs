@@ -21,7 +21,6 @@ namespace ArcadeFlyer2D
             get { return spriteImage; }
             set { spriteImage = value; }
         }
-
         // The width of the sprite
         private float spriteWidth;
         public float SpriteWidth
@@ -58,9 +57,10 @@ namespace ArcadeFlyer2D
         }
 
         // Draw the sprite
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 playerPosition)
         {
-            spriteBatch.Draw(spriteImage, PositionRectangle, Color.White);
+            Vector2 drawPosition = new Vector2(position.X-playerPosition.X, position.Y);
+            spriteBatch.Draw(spriteImage, drawPosition, Color.White);
         }
 
         public bool Overlap(Sprite otherSprite)
