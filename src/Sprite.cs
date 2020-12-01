@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace ArcadeFlyer2D
 {
@@ -30,7 +31,7 @@ namespace ArcadeFlyer2D
         }
 
         // The height of the sprite
-        public float SpriteHeight
+        public virtual float SpriteHeight
         {
             get
             {
@@ -60,6 +61,12 @@ namespace ArcadeFlyer2D
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 playerPosition)
         {
             Vector2 drawPosition = new Vector2(position.X-playerPosition.X, position.Y);
+            spriteBatch.Draw(spriteImage, drawPosition, Color.White);
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 playerPosition, float depthMultiplier)
+        {
+            Vector2 drawPosition = new Vector2(position.X-(playerPosition.X*depthMultiplier), position.Y);
             spriteBatch.Draw(spriteImage, drawPosition, Color.White);
         }
 

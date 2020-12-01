@@ -8,14 +8,15 @@ namespace ArcadeFlyer2D
         // A reference to the game that will contain this enemy
         private ArcadeFlyerGame root;
 
+        private string backgroundImage;
         // Initialize an enemy
-        public Background(ArcadeFlyerGame root, Vector2 position) : base(position)
+        public Background(ArcadeFlyerGame root, Vector2 position, string backgroundImage, Vector2 offset) : base(position)
         {
             // Initialize values
-            Vector2 offset = new Vector2(1600, 450);
             this.root = root;
             this.position = position - offset;
-            this.SpriteWidth = 128.0f;
+            this.SpriteWidth = 3200.0f;
+            this.backgroundImage = backgroundImage;
             // Load the content for this enemy
             LoadContent();
         }
@@ -24,13 +25,13 @@ namespace ArcadeFlyer2D
         public void LoadContent()
         {
             // Get the Enemy image
-            this.SpriteImage = root.Content.Load<Texture2D>("Background");
+            this.SpriteImage = root.Content.Load<Texture2D>(backgroundImage);
         }
 
         // Called each frame
         public void Update(GameTime gameTime)
         {
-
+            
         }
     }
 }

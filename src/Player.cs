@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace ArcadeFlyer2D
 {
@@ -75,9 +76,9 @@ namespace ArcadeFlyer2D
             if (spaceKeyPressed && !coolDownTimer.Active && isUp)
             {
                 isUp = false;
-                Vector2 projectilePosition = new Vector2(position.X + (SpriteWidth/2), position.Y + (SpriteHeight/2));
-                Vector2 projectileVelocity = new Vector2(4.0f,0.0f);
-                root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Player);
+                Vector2 projectilePosition = new Vector2(position.X, position.Y);
+                float  targetPosition = projectilePosition.X + 300.0f;
+                root.FireProjectile(projectilePosition, ProjectileType.Player, projectilePosition.X, targetPosition);
                 coolDownTimer.StartTimer();
             }
         }
@@ -96,5 +97,6 @@ namespace ArcadeFlyer2D
         {
             spriteBatch.Draw(SpriteImage, screenCenter, Color.White);
         }
+
     }
 }
