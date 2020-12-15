@@ -10,7 +10,7 @@ namespace ArcadeFlyer2D
 
         private string backgroundImage;
         // Initialize an enemy
-        public Background(ArcadeFlyerGame root, Vector2 position, string backgroundImage, Vector2 offset) : base(position)
+        public Background(ArcadeFlyerGame root, Vector2 position, string backgroundImage, Vector2 offset, Direction direction) : base(position, direction)
         {
             // Initialize values
             this.root = root;

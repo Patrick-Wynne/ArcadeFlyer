@@ -8,13 +8,18 @@ namespace ArcadeFlyer2D
     class Sprite
     {
         // The current position of the sprite
-        protected Vector2 position;
+        public Vector2 position;
         public Vector2 Position
         {
             get { return position; }
             set { position = value; }
         }
-
+        protected Direction direction;
+        public Direction Direction
+        {
+            get { return direction;}
+            set { direction = value;}
+        }
         // An image texture for the sprite
         private Texture2D spriteImage;
         public Texture2D SpriteImage
@@ -37,7 +42,7 @@ namespace ArcadeFlyer2D
             {
                 // Calculated based on the width
                 float scale = spriteWidth / spriteImage.Width;
-                return spriteImage.Height * scale;
+                return spriteImage.Width * scale;
             }
         }
 
@@ -51,10 +56,11 @@ namespace ArcadeFlyer2D
         }
         
         // Initialize a sprite
-        public Sprite(Vector2 position)
+        public Sprite(Vector2 position, Direction direction)
         {
             // Initialize values
             this.position = position;
+            this.direction = direction;
         }
 
         // Draw the sprite
@@ -68,6 +74,34 @@ namespace ArcadeFlyer2D
         {
             Vector2 drawPosition = new Vector2(position.X-(playerPosition.X*depthMultiplier), position.Y);
             spriteBatch.Draw(spriteImage, drawPosition, Color.White);
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 playerPosition, float depthMultiplier, float rotation, Direction direction)
+        {
+            Vector2 drawPosition = new Vector2(position.X-(playerPosition.X*depthMultiplier), position.Y);
+            //spriteBatch.Draw(spriteImage, PositionRectangle, null, Color.White, rotation, drawPosition, SpriteEffects.None, 0f);
+            if(direction == Direction.Left)
+            {
+            spriteBatch.Draw(spriteImage, drawPosition, null, Color.White, rotation, new Vector2(16,16), new Vector2(1,1), SpriteEffects.FlipHorizontally, 0f);
+            }
+            else
+            {
+                spriteBatch.Draw(spriteImage, drawPosition, null, Color.White, rotation, new Vector2(16,16), new Vector2(1,1), SpriteEffects.None, 0f);
+            }
+        }
+
+public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 playerPosition, Direction direction, int frameIndex)
+        {
+            Vector2 drawPosition = new Vector2(position.X-(playerPosition.X), position.Y);
+            Rectangle frame = new Rectangle(0, 128*frameIndex, 128, 128);
+            if(direction == Direction.Left)
+            {
+            spriteBatch.Draw(spriteImage, drawPosition, frame, Color.White, 0, new Vector2(16,16), new Vector2(1,1), SpriteEffects.FlipHorizontally, 0f);
+            }
+            else
+            {
+                spriteBatch.Draw(spriteImage, drawPosition, frame, Color.White, 0, new Vector2(16,16), new Vector2(1,1), SpriteEffects.None, 0f);
+            }
         }
 
         public bool Overlap(Sprite otherSprite)

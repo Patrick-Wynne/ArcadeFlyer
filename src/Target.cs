@@ -6,20 +6,20 @@ using System;
 namespace ArcadeFlyer2D
 {
     // The Game itself
-    class Enemy : Pathfinder
+    class Target : Sprite
     {
         private ArcadeFlyerGame root;
-        public Enemy(ArcadeFlyerGame root, Vector2 position, Direction direction) : base(position, root, direction)
+        public Target(ArcadeFlyerGame root, Vector2 position, Direction direction) : base(position, direction)
         {
             this.position = position;
-            this.SpriteWidth = 128f;
+            this.SpriteWidth = 32.0f;
             this.root = root;
             LoadContent();
         }
 
         public void LoadContent()
         {
-            this.SpriteImage = root.Content.Load<Texture2D>("Enemy");
+            this.SpriteImage = root.Content.Load<Texture2D>("PlayerFire");
         }
 
     }

@@ -10,33 +10,51 @@ namespace ArcadeFlyer2D
         private float initial;
         private float initialY;
         private float target;
-        private float speed = 5f;
-        private ProjectileType projectileType;
-        public ProjectileType ProjectileType
+        private float speed = 15f;
+        private float rotation;
+        public float Rotation
         {
-            get { return projectileType; }
-            set { projectileType = value; }
+            get { return rotation; }
         }
         
         
-        public Projectile(Vector2 position, Texture2D spriteImage, ProjectileType projectileType, float initial, float target, float initialY) : base(position)
+        
+        public Projectile(Vector2 position, Texture2D spriteImage, float initial, float target, float initialY, Direction direction) : base(position, direction)
         {
             this.SpriteWidth = 32.0f;
             this.SpriteImage = spriteImage;
-            this.projectileType = projectileType;
             this.initial = initial;
             this.target = target;
             this.initialY = initialY;
-            Console.WriteLine("initial "+this.initial);
-            Console.WriteLine("target "+this.target);
         }
 
         public void Update(GameTime gameTime)
         {
-            float zero = position.X-initial;
-            position.X += speed;
-            position.Y = ((zero-initial)*(zero-target))/80+400;
-            Console.WriteLine(position.Y);
+            if(target<initial)
+            {
+                speed = (target-initial)/25;
+                position.X += speed;
+            }
+            else
+            {
+                speed = (initial-target)/25;
+                position.X -= speed;
+            }
+
+            float zero = position.X;
+            float median = (initial+target)/2;
+            float k = 300f;
+            float a = (initialY-k)/((initial-median)*(initial-median));
+            
+            position.Y = -2*a*((zero-median)*(zero-median))+k-100;
+            if(direction == Direction.Right)
+            {
+                rotation = (zero-initial)/(target-initial);
+            } 
+            else
+            {
+                rotation = -(zero-initial)/(target-initial);
+            }
         }
     }
 }
