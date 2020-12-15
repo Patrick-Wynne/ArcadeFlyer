@@ -49,13 +49,13 @@ namespace ArcadeFlyer2D
         private void HandleInput(KeyboardState currentKeyboardState, GameTime gameTime, MouseState mouseState)
         {
             // Get all the key states
-            bool upKeyPressed = currentKeyboardState.IsKeyDown(Keys.Up);
-            bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.Down);
-            bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.Left);
-            bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.Right);
+            bool upKeyPressed = currentKeyboardState.IsKeyDown(Keys.W);
+            bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.S);
+            bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.A);
+            bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.D);
             bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space);
             bool spaceKeyUp = currentKeyboardState.IsKeyUp(Keys.Space);
-            bool upKeyUp = currentKeyboardState.IsKeyUp(Keys.Up);
+            bool upKeyUp = currentKeyboardState.IsKeyUp(Keys.W);
             bool isMouseDown = mouseState.LeftButton == ButtonState.Pressed;
             bool isMouseUp = mouseState.LeftButton == ButtonState.Released;
             // If Up is pressed, decrease position Y
@@ -63,7 +63,6 @@ namespace ArcadeFlyer2D
             {
                 isUp2 = false;
                 upPressed = true;
-                Console.WriteLine("up was pressed");
                 //position.Y -= movementSpeed;
             }
             else
@@ -100,11 +99,13 @@ namespace ArcadeFlyer2D
             // If Left is pressed, decrease position X
             if (leftKeyPressed)
             {
+                
                 if(position.X - movementSpeed>=0)
                 {
                     position.X -= movementSpeed;
                     animationTimer.update(gameTime);
                 }
+                
                 direction = Direction.Left;
             }
             

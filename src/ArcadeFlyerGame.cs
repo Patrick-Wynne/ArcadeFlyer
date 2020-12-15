@@ -15,7 +15,7 @@ namespace ArcadeFlyer2D
         private SpriteBatch spriteBatch;
 
         // The player
-        private Player player;
+        public Player player;
 
 
         private List<Projectile> projectiles;
@@ -37,9 +37,12 @@ namespace ArcadeFlyer2D
         private int coinCount;
         private Target target;
         public List<Archer> archers;
+        public bool gameEnd = false;
         // Screen width
         private int screenWidth = 1600;
         SpawnManager spawnManager;
+        private Sprite tree1;
+        private Sprite tree2;
         public int ScreenWidth
         {
             get { return screenWidth; }
@@ -76,7 +79,7 @@ namespace ArcadeFlyer2D
             IsMouseVisible = true;
 
             // Initialize the player to be in the top left
-            player = new Player(this, new Vector2(0.0f, 175), new Vector2(ScreenWidth/2, screenHeight/2), Direction.Right);
+            player = new Player(this, new Vector2(780, 175), new Vector2(ScreenWidth/2, screenHeight/2), Direction.Right);
 
             // Initialize an enemy to be on the right side
 
@@ -86,17 +89,21 @@ namespace ArcadeFlyer2D
             bgSky = new Background(this, new Vector2(screenWidth, screenHeight/2), "BackgroundSky", new Vector2(1600, 450), Direction.Right);
             coins = new List<Coin>();
             interactables = new List<Interactable>();
-            treeO = new Interactable(this, new Vector2(100, 240), Direction.Right);
+            treeO = new Interactable(this, new Vector2(780, 240), Direction.Right);
             interactables.Add(treeO);
             enemies = new List<Enemy> ();
-            enemy = new Enemy(this, new Vector2(-10, 392), Direction.Right);
-            enemies.Add(enemy);
+            //enemy = new Enemy(this, new Vector2(-10, 392), Direction.Right);
+            //enemies.Add(enemy);
             archer = new Archer(this, new Vector2(1000, 408), Direction.Right);
             archers = new List<Archer>();
             archers.Add(archer);
             coinCount = 0;
-            spawnManager = new SpawnManager(this, 10);
+            spawnManager = new SpawnManager(this, 5);
             target = new Target(this, new Vector2(0,460), Direction.Right);
+            tree1 = new Sprite(new Vector2(-140,240), Direction.Right);
+            tree1.SpriteImage = Content.Load<Texture2D>("Tree");
+            tree2 = new Sprite(new Vector2(1560,240), Direction.Right);
+            tree2.SpriteImage = Content.Load<Texture2D>("Tree");
         }
 
         // Initialize
@@ -122,13 +129,30 @@ namespace ArcadeFlyer2D
             // Update base game
             base.Update(gameTime);
             // Update the components
+            player.Update(gameTime);
             spawnManager.Update(gameTime);
-            archer.Update(gameTime);
             for (int i = enemies.Count -1; i >= 0; i--)
             {
+                if(enemies[i].Overlap(player))
+                {
+                    gameEnd = true;
+                }
+                enemies[i].speed = spawnManager.wave*.75f;
                 enemies[i].Update(gameTime);
+                for (int k = archers.Count -1; k >= 0; k--)
+                {
+                    if(enemies[i].Overlap(archers[k]))
+                    {
+                        archers.Remove(archers[k]);
+                    }
+                }
+                
             }
-            player.Update(gameTime);
+
+            for (int i = archers.Count -1; i >= 0; i--)
+            {
+                archers[i].Update(gameTime);
+            }
             bgGround.Update(gameTime);
             bgFoliage.Update(gameTime);
             bgSky.Update(gameTime);
@@ -139,6 +163,7 @@ namespace ArcadeFlyer2D
                 if(player.upPressed && coinCount>=inter.cost)
                 {
                     inter.Upgrade();
+                    coinCount -= inter.cost;
                 }
                 if(inter.Overlap(player))
                 {
@@ -177,6 +202,11 @@ namespace ArcadeFlyer2D
                         }
                     }
             }
+            if(gameEnd)
+            {
+                Console.WriteLine("game over");
+                return;
+            }
         }
         // Draw everything in the game
         protected override void Draw(GameTime gameTime)
@@ -190,7 +220,6 @@ namespace ArcadeFlyer2D
             bgSky.Draw(gameTime, spriteBatch, player.Position, 0.3f);
             bgFoliage.Draw(gameTime, spriteBatch, player.Position, 0.8f);
             // Draw the components
-            player.Draw(gameTime, spriteBatch, new Vector2(screenWidth/2, screenHeight/2-42));
 
             foreach (Projectile p in projectiles)
             {
@@ -208,14 +237,21 @@ namespace ArcadeFlyer2D
             }
             foreach (Enemy e in enemies)
             {
-                e.Draw(gameTime, spriteBatch, player.Position - new Vector2(ScreenWidth/2, screenHeight/2));
+                e.Draw(gameTime, spriteBatch, player.Position - new Vector2(ScreenWidth/2, screenHeight/2), e.Direction, e.frameIndex);
             }
-            archer.Draw(gameTime, spriteBatch, player.Position - new Vector2(ScreenWidth/2, screenHeight/2), archer.Direction, archer.frameIndex);
+            foreach (Archer a in archers)
+            {
+                a.Draw(gameTime, spriteBatch, player.Position - new Vector2(ScreenWidth/2, screenHeight/2), a.Direction, a.frameIndex);
+            }
             if(player.drawTarget)
             {
                 target.Draw(gameTime, spriteBatch, player.Position);
             }
-            spriteBatch.DrawString(textFont, "Coins: "+coinCount, new Vector2(0,0), Color.Blue);
+            player.Draw(gameTime, spriteBatch, new Vector2(screenWidth/2, screenHeight/2-42));
+            tree1.Draw(gameTime, spriteBatch, player.Position - new Vector2(ScreenWidth/2, screenHeight/2));
+            tree2.Draw(gameTime, spriteBatch, player.Position - new Vector2(ScreenWidth/2, screenHeight/2));
+            spriteBatch.DrawString(textFont, "Coins: "+coinCount, new Vector2(0,0), Color.Black);
+            spriteBatch.DrawString(textFont, "wave: "+spawnManager.wave, new Vector2(0,30), Color.Black);
             // End batch draw
             spriteBatch.End();
         }

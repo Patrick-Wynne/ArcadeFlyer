@@ -13,12 +13,15 @@ namespace ArcadeFlyer2D
         public Random pathfinderRandom;
         public float speed = 1f;
         public float targetPosition;
+                public int frameIndex = 0;
+        private Timer animationTimer;
         public Pathfinder(Vector2 position, ArcadeFlyerGame root, Direction direction) : base(position, direction)
         {
             this.position = position;
             movementTimer = new Timer(5.0f);
             pathfinderRandom = new Random();
             targetPosition = position.X;
+            animationTimer = new Timer(0.2f);
             this.root = root;
         }
         public virtual void Update(GameTime gameTime)
@@ -42,7 +45,7 @@ namespace ArcadeFlyer2D
             else
             {
             */
-                if(position.X>root.archer.position.X)
+                if(position.X>root.player.position.X)
                     {
                         position.X -= speed;
                     }
@@ -50,7 +53,20 @@ namespace ArcadeFlyer2D
                     {
                         position.X += speed;
                     }
+                    animationTimer.update(gameTime);
+                if(!animationTimer.Active)
+                {
+                    animationTimer.StartTimer();
+                    if(frameIndex==2)
+                    {
+                        frameIndex = 0;
+                    }
+                    else
+                    {
+                        frameIndex++;
+                    }   
             //}
+                }
         }
     }
 }
