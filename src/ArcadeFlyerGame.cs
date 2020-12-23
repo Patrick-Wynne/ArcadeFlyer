@@ -162,8 +162,8 @@ namespace ArcadeFlyer2D
                 Interactable inter = interactables[i];
                 if(player.upPressed && coinCount>=inter.cost)
                 {
-                    inter.Upgrade();
                     coinCount -= inter.cost;
+                    inter.Upgrade();
                 }
                 if(inter.Overlap(player))
                 {
